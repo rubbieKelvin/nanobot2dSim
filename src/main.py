@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     index = -1
 
-    SIZE = 700
+    SIZE = 620
     window = pygame.display.set_mode((SIZE,)*2)
     running = True
 

@@ -7,15 +7,15 @@ def iftrue(condition, funtion, *args, **kwargs):
 
 class UnusualMatrix:
 
-	START_X = 100
-	START_Y = 100
-	SIZE	= 60
-	SPACE	= 7
+	START_X = 10
+	START_Y = 10
+	SIZE	= 120
+	SPACE	= 5
 	
 	def __init__(self):
 		self._data = (
 			(
-				random.choice(( *(0,)*3, 1 )) for _ in range(UnusualMatrix.SIZE)
+				random.randint(0, 1) for _ in range(UnusualMatrix.SIZE)
 			) for _ in range(UnusualMatrix.SIZE)
 		)
 

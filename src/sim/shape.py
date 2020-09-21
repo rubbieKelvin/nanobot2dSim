@@ -7,7 +7,7 @@ class NanoBotShape:
 
 	def __init__(self, bot:nanobot.NanoBot):
 		self.bot = bot
-		self.color = (0,)*3
+		self.color = (0, 0, 0)
 
 	def draw(self):
 		self.bot.update()
@@ -19,7 +19,7 @@ class NanoBotShape:
 				int(self.bot.point.x),
 				int(self.bot.point.y),
 			), 
-			3, 0
+			2, 0
 		)
 
 	@property

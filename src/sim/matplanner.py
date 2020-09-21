@@ -20,21 +20,23 @@ class Planner:
 
     def __init__(self):
         self.FILEDATA = []
+        self.CONDITION = lambda i, j:True
 
     def _plan(self):
         bot_create = 0
         for i in range(UnusualMatrix.SIZE):
             for j in range(UnusualMatrix.SIZE):
                 if not bot_create == len(Planner.BOTS):
-                    bot = Planner.BOTS[bot_create]
-                    bot.speed = Speed()
-                    bot.moveto(
-                        Point(
-                            x=(UnusualMatrix.START_X+(j*UnusualMatrix.SPACE)),
-                            y=(UnusualMatrix.START_Y+(i*UnusualMatrix.SPACE)),
+                    if self.CONDITION(i, j):
+                        bot = Planner.BOTS[bot_create]
+                        bot.speed = Speed()
+                        bot.moveto(
+                            Point(
+                                x=(UnusualMatrix.START_X+(j*UnusualMatrix.SPACE)),
+                                y=(UnusualMatrix.START_Y+(i*UnusualMatrix.SPACE)),
+                            )
                         )
-                    )
-                    bot_create += 1
+                        bot_create += 1
                     continue
             if bot_create == len(Planner.BOTS): break
 
@@ -44,11 +46,18 @@ class Planner:
             if not self.FILEDATA:
                 self._plan()
             else:
-                for i, bot in enumerate(Planner.BOTS):
+                bots = (bot for bot in Planner.BOTS)
+                i = 0
+
+                for bot in bots:
                     try:
                         bot.moveto(self.FILEDATA[i])
+                        i += 1
                     except IndexError:
                         break
+
+                for bot in bots:
+                    bot.moveto(Point(-10, -10))
 
             Planner.PLANNING = False
 
@@ -66,65 +75,19 @@ class Planner:
                     )
         return self
 
-class Mul3Planner(Planner):
-    def _plan(self):
-        bot_create = 0
-        for i in range(UnusualMatrix.SIZE):
-            for j in range(UnusualMatrix.SIZE):
-                if not bot_create == len(Planner.BOTS):
-                    if not (j*i)%3:
-                        bot = Planner.BOTS[bot_create]
-                        bot.speed = Speed()
-                        bot.moveto(
-                            Point(
-                                x=(UnusualMatrix.START_X+(j*UnusualMatrix.SPACE)),
-                                y=(UnusualMatrix.START_Y+(i*UnusualMatrix.SPACE)),
-                            )
-                        )
-                        bot_create += 1
-                    continue
-            if bot_create == len(Planner.BOTS): break
+    def fromcondition(self, condition):
+        self.CONDITION = condition
+        return self
 
-class Mul5Planner(Planner):
-    def _plan(self):
-        bot_create = 0
-        for i in range(UnusualMatrix.SIZE):
-            for j in range(UnusualMatrix.SIZE):
-                if not bot_create == len(Planner.BOTS):
-                    if not (j*i)%5:
-                        bot = Planner.BOTS[bot_create]
-                        bot.speed = Speed()
-                        bot.moveto(
-                            Point(
-                                x=(UnusualMatrix.START_X+(j*UnusualMatrix.SPACE)),
-                                y=(UnusualMatrix.START_Y+(i*UnusualMatrix.SPACE)),
-                            )
-                        )
-                        bot_create += 1
-                    continue
-            if bot_create == len(Planner.BOTS): break
-
-class Mul8Planner(Planner):
-    def _plan(self):
-        bot_create = 0
-        for i in range(UnusualMatrix.SIZE):
-            for j in range(UnusualMatrix.SIZE):
-                if not bot_create == len(Planner.BOTS):
-                    if not (j*i)%8:
-                        bot = Planner.BOTS[bot_create]
-                        bot.speed = Speed()
-                        bot.moveto(
-                            Point(
-                                x=(UnusualMatrix.START_X+(j*UnusualMatrix.SPACE)),
-                                y=(UnusualMatrix.START_Y+(i*UnusualMatrix.SPACE)),
-                            )
-                        )
-                        bot_create += 1
-                    continue
-            if bot_create == len(Planner.BOTS): break
 
 import random
-PLANS = [ Planner(), Mul3Planner(), Mul5Planner(), Mul8Planner() ]
+
+CONDITIONS = [
+    lambda i, j: any([not i%8, not j%8]),
+    lambda i, j: any([not i%10, not j%10]),
+]
+
+PLANS = [ Planner().fromcondition(condition) for condition in CONDITIONS ]
 PLANS += [ Planner().fromfile(
         os.path.join(MATRICES_FILE_DIR, filename)
     ) for filename in os.listdir(MATRICES_FILE_DIR)
