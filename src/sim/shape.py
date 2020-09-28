@@ -7,19 +7,19 @@ class NanoBotShape:
 
 	def __init__(self, bot:nanobot.NanoBot):
 		self.bot = bot
-		self.color = (0, 0, 0)
+		self.color = [random.randint(0, 150) for _ in range(3)]
 
 	def draw(self):
 		self.bot.update()
 
 		pygame.draw.circle(
-			self.surface, 
+			self.surface,
 			self.color,
 			(
 				int(self.bot.point.x),
 				int(self.bot.point.y),
-			), 
-			2, 0
+			),
+			3, 0
 		)
 
 	@property

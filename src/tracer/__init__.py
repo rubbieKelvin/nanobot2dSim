@@ -1,6 +1,7 @@
 import os
 import sys
 import pygame
+import random
 from pygame import rect
 from physics.matrix import UnusualMatrix
 
@@ -15,10 +16,11 @@ class Node:
         self.black = False
         self.x = x
         self.y = y
+        self._color = [random.randint(0, 150) for _ in range(3)]
 
     @property
     def color(self):
-        return (0, 0, 0) if self.black else (255, 255, 255)
+        return self._color if self.black else (255, 255, 255)
 
     def draw(self):
         if not Node.SURFACE: return
